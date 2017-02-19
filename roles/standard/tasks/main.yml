@@ -1,4 +1,10 @@
 ---
+- name: Disable rpcbind
+  service:
+    name: rpcbind
+    state: stopped
+    enabled: no
+
 - name: vagrant bashrc
   patch:
     backup: no
