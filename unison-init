@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+# create ssh-config file
+ssh_config="$PWD/.vagrant/ssh-config"
+vagrant ssh-config > "$ssh_config"
+
+# create unison profile
+profile="
+root = ./microsites
+root = ssh://default//microsites
+#ignore = Name {.git,.vagrant}
+
+prefer = ./microsites
+repeat = 2
+terse = true
+dontchmod = false
+perms = 0
+confirmbigdel = false
+sshargs = -F $ssh_config
+"
+
+# write profile
+
+if [ -z ${USERPROFILE+x} ]; then
+  UNISONDIR=$HOME
+else
+  UNISONDIR=$USERPROFILE
+fi
+
+cd $UNISONDIR
+[ -d .unison ] || mkdir .unison
+echo "$profile" > .unison/up.prf

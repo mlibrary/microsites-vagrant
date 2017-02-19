@@ -1,0 +1,37 @@
+- name: Create /microsites
+  file: state=directory path=/microsites mode=0775 owner=vagrant group=vagrant
+
+- name: Create mysql database for microsites
+  mysql_db:
+    name: microsites
+    state: present
+
+- name: Create mysql user for microsites
+  mysql_user:
+    name: microsites
+    host: localhost
+    password: "{{ lookup('password', 'credentials/mysql/microsites length=15') }}"
+    priv: "microsites.*:ALL"
+    state: present
+
+- name: Create apache site-available
+  copy:
+    src: roles/microsites/files/apache2/sites-available/001-microsites.conf
+    dest: /etc/apache2/sites-available/001-microsites.conf
+    mode: 0664
+    owner: root
+    group: root
+  notify: apache reload
+
+- name: Remove the default vhost config
+  file: state=absent path=/etc/apache2/sites-enabled/000-default.conf
+  notify: apache reload
+
+- name: Link the microsites vhost config
+  file:
+    dest: /etc/apache2/sites-enabled/001-microsites.conf
+    src: ../sites-available/001-microsites.conf
+    owner: root
+    group: root
+    state: link
+  notify: apache reload

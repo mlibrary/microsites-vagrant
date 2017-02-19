@@ -1,0 +1,11 @@
+---
+- name: Install apache
+  apt: name=apache2 state=present
+- name: Install php5-cli
+  apt: name=php5-cli state=present
+- name: Install php5-cgi
+  apt: name=php5-cgi state=present
+- name: Install php5 for Apache
+  apt: name=libapache2-mod-php5 state=present
+- name: Install php5
+  apt: name=php5-mysql state=present

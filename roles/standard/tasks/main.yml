@@ -1,0 +1,26 @@
+---
+- name: vagrant bashrc
+  patch:
+    backup: no
+    dest: /home/vagrant/.bashrc
+    src: roles/standard/patches/bashrc.patch
+
+- name: Copy unison.pref
+  copy:
+    src: roles/standard/files/apt/preferences.d/unison.pref
+    dest: /etc/apt/preferences.d/unison.pref
+    mode: 0664
+  notify: apt update
+  
+- name: Copy unison.list
+  copy:
+    src: roles/standard/files/apt/sources.list.d/unison.list
+    dest: /etc/apt/sources.list.d/unison.list
+    mode: 0664
+  notify: apt update
+  
+- name: Flush handlers
+  meta: flush_handlers
+
+- name: Unison
+  apt: name=unison state=present

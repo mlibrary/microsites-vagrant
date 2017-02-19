@@ -1,0 +1,14 @@
+---
+- name: Microsites playbook
+  hosts: vagrant
+  remote_user: vagrant
+  become: yes
+  roles:
+    - role: standard
+      tags: ['vagrant']
+    - role: web
+      tags: ['vagrant']
+    - role: database
+      tags: ['vagrant']
+    - role: microsites
+      tags: ['vagrant']
