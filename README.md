@@ -1,10 +1,10 @@
-A vagrant configuration for running microsites.
+A vagrant configuration for running microsites. Filesystem syncing via unison is optional.
 
 ## Prerequisites
 
 1. vagrant
 1. ansible
-1. unison
+1. unison (optional)
 
 ## Installing a microsites vagrant host
 
@@ -13,8 +13,8 @@ A vagrant configuration for running microsites.
 1. `cd microsites-vagrant`
 1. `git clone https://github.com/mlibrary/microsites`
 1. `vagrant up`
-1. `./unison-init`
-1. `unison up`
+1. Optional: `./unison-init`
+1. Optional: `unison up`
 
 ## Starting with microsites
 
