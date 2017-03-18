@@ -35,3 +35,26 @@
     group: root
     state: link
   notify: apache reload
+
+# This is handled better in ansible 2.1. I'm on 2.0.0.2 currently.
+# http://chaosmail.github.io/programming/2015/03/04/install-deb-packages-in-ansible/
+- name: Check if php-wpcli is installed
+  command: dpkg-query -f '${Version}' -W php-wpcli
+  register: php_wpcli_check_deb
+  failed_when: php_wpcli_check_deb.rc > 1
+  changed_when: php_wpcli_check_deb.rc == 1
+
+- name: Download php-wpcli
+  get_url:
+    url="https://github.com/wp-cli/builds/raw/gh-pages/deb/php-wpcli_1.1.0_all.deb"
+    dest="/tmp/php-wpcli.deb"
+  when:
+    - php_wpcli_check_deb.rc == 1
+    - php_wpcli_check_deb.stdout != '1.1.0'
+
+- name: Install php-wpcli
+  apt: deb="/tmp/php-wpcli.deb"
+  become: true
+  when:
+    - php_wpcli_check_deb.rc == 1
+    - php_wpcli_check_deb.stdout != '1.1.0'
