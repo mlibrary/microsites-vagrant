@@ -36,6 +36,33 @@
     state: link
   notify: apache reload
 
+- name: Enable mod_authnz_ldap and mod_ldap
+  file:
+    dest: /etc/apache2/mods-enabled/ldap.conf
+    src: ../mods-available/ldap.conf
+    owner: root
+    group: root
+    state: link
+  notify: apache reload
+
+- name: Enable mod_authnz_ldap and mod_ldap
+  file:
+    dest: /etc/apache2/mods-enabled/ldap.load
+    src: ../mods-available/ldap.load
+    owner: root
+    group: root
+    state: link
+  notify: apache reload
+
+- name: Enable mod_authnz_ldap and mod_ldap
+  file:
+    dest: /etc/apache2/mods-enabled/authnz_ldap.load
+    src: ../mods-available/authnz_ldap.load
+    owner: root
+    group: root
+    state: link
+  notify: apache reload
+
 # This is handled better in ansible 2.1. I'm on 2.0.0.2 currently.
 # http://chaosmail.github.io/programming/2015/03/04/install-deb-packages-in-ansible/
 - name: Check if php-wpcli is installed
