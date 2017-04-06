@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [ x"$1" = x"" ] ; then
+  FILE="$USER.microsites.sql.gz"
+else
+  FILE="$1"
+fi
+
+vagrant ssh -- -e none mysqldump -u root microsites | gzip -c > "$FILE"
