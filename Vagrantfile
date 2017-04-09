@@ -70,6 +70,31 @@ Vagrant.configure(2) do |config|
     ansible.playbook = 'playbook.yml'
   end
 
+  config.vm.provision "trigger", good_exit: [0, 128] do |trigger|
+    trigger.fire do
+      unless File.exist?('microsites')
+        run "git clone https://github.com/mlibrary/microsites"
+      end
+    end
+  end
+
+  config.vm.provision "trigger" do |trigger|
+    trigger.fire do
+      Bundler.with_clean_env do
+        run "bash bin/unison-init"
+        run "bash -c '(cd rb && bundle install --path .bundle)'"
+        unless File.exist?('credentials/box-config.yml')
+          puts "Configuring box."
+          cfg = {}
+          cfg['client_id'] = ask "client_id: "
+          cfg['client_secret'] = ask "client_secret: "
+          IO.write('credentials/box-config.yml', YAML.dump(cfg))
+        end
+        run "bin/box setup"
+      end
+    end
+  end
+
   # Enable provisioning with a shell script. Additional provisioners such as
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.

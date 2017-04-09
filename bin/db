@@ -1,0 +1,39 @@
+#!/bin/bash
+
+
+if [ x"$2" = x"" ] ; then
+  FILE="$USER.microsites.sql.gz"
+else
+  FILE="$2"
+fi
+
+# First figure out where we're being run from
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
+  DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+  SOURCE="$(readlink "$SOURCE")"
+  # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
+done
+DIR="$(dirname "$( cd -P "$( dirname "$SOURCE" )" && pwd )")"
+
+case "$1" in
+import)
+  # Copy the export from box
+  "$DIR/bin/box" get "$FILE"
+
+  # Load the export via ssh and mysql
+  gunzip -c < "$FILE" | vagrant ssh -- mysql -u root microsites
+  ;;
+
+export)
+  # Dump the export to a file via ssh and mysql
+  vagrant ssh -- -e none mysqldump -u root microsites | gzip -c > "$FILE"
+
+  # Upload the export to box.
+  "$DIR/bin/box" put "$FILE"
+  ;;
+*)
+  echo "usage: $0 (import | export) [$USER.microsites.sql.gz]"
+  exit 1
+esac

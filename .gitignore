@@ -1,6 +1,7 @@
 /microsites
 /credentials
 /.vagrant
+/rb/.bundle
 *.swo
 *.swp
 *.sql.gz

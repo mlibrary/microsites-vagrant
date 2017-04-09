@@ -1,4 +1,8 @@
-#!/usr/bin/env bash
+#!/bin/bash
+
+# Running vagrant from vagrant needs
+# this to be unset.
+unset VAGRANT_INTERNAL_BUNDLERIZED
 
 # create ssh-config file
 ssh_config="$PWD/.vagrant/ssh-config"
