@@ -78,9 +78,10 @@ status)
 
 
 debug)
+  shift
   HOME="$DIR/.vagrant"
   vagrant ssh-config > "$ssh_config"
-  unison up -debug all
+  unison up -debug all "$@"
   ;;
 
 *)
