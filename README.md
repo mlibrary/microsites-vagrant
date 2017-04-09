@@ -23,6 +23,6 @@ A vagrant configuration for running microsites locally. Filesystem syncing via u
 
 ## Importing and exporting a database from box
 
-Use `db import [db-file]` and `db export [db-file]` to import and export a file respectively.
+Use `bin/db import [db-file]` and `bin/db export [db-file]` to import and export a file respectively.
 
 If a file name is not provided. The default is `$USER.microsites.sql.gz`.
