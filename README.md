@@ -3,15 +3,17 @@ A vagrant configuration for running microsites locally. Filesystem syncing via u
 ## Prerequisites
 
 1. vagrant
+1. vagrant-triggers plugin
 1. ansible
 1. unison
 
 ## Installing a microsites vagrant host
 
-1. Add microsites.local to your `hosts` file as  `10.255.21.10`
+1. Add microsites.local to your `hosts` file as `10.255.21.10`
 1. `git clone https://github.com/mlibrary/microsites-vagrant`
 1. `cd microsites-vagrant`
 1. `vagrant up`
+1. Follow instructions in `vagrant up` output to get an Oauth access token for box.it.umich.edu.
 
 ## Starting with microsites
 
@@ -21,6 +23,6 @@ A vagrant configuration for running microsites locally. Filesystem syncing via u
 
 ## Importing and exporting a database from box
 
-Use `db import [db-file]` and `db export [db-file]`  to import and export a file respectively.
+Use `db import [db-file]` and `db export [db-file]` to import and export a file respectively.
 
 If a file name is not provided. The default is `$USER.microsites.sql.gz`.
