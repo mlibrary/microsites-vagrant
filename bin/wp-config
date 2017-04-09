@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+ROOT = File.expand_path(__FILE__ + '/../..')
+CONFIG = "#{ROOT}/microsites/wp-config.php"
+EXAMPLE = "#{CONFIG}.EXAMPLE"
+CREDENTIALS = "#{ROOT}/credentials/mysql/microsites"
+exit 0 if File.exist?(CONFIG)
+
+params = {
+  'THE_DOMAIN_CURRENT_SITE' => 'microsites.local',
+  'THE_DB_NAME' => 'microsites',
+  'THE_DB_USER' => 'microsites',
+  'THE_DB_PASSWORD' => IO.read(CREDENTIALS).chomp,
+  'THE_DB_HOST' => 'localhost',
+}
+config = IO.read(EXAMPLE)
+params.each_pair do |search, replace|
+  config.sub!(search, replace)
+end
+IO.write(CONFIG, config)

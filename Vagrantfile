@@ -80,6 +80,7 @@ Vagrant.configure(2) do |config|
 
   config.vm.provision "trigger" do |trigger|
     trigger.fire do
+      run "bin/wp-config"
       run "bin/unison setup"
       run "bash -c '(cd rb && bundle install --path .bundle)'"
       unless File.exist?('credentials/box-config.yml')

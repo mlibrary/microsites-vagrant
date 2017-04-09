@@ -6,6 +6,7 @@ A vagrant configuration for running microsites locally. Filesystem syncing via u
 1. vagrant-triggers plugin
 1. ansible
 1. unison
+1. ruby
 
 ## Installing a microsites vagrant host
 
@@ -15,9 +16,8 @@ A vagrant configuration for running microsites locally. Filesystem syncing via u
 1. `vagrant up`
 1. Follow instructions in `vagrant up` output to get an Oauth access token for box.it.umich.edu.
 
-## Starting with microsites
+## Starting with microsites' WordPress
 
-1. Copy database credentials from `credentials/mysql/microsites` to `microsites/wp-config.php`
 1. Install a fresh database, or load a database with `bin/db import`
 1. Visit at http://microsites.local/
 
