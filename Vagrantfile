@@ -95,6 +95,22 @@ Vagrant.configure(2) do |config|
     end
   end
 
+  config.trigger.before [:halt, :reload, :suspend, :destroy] do
+    run "bin/unison stop"
+  end
+
+  config.trigger.after [:up, :resume, :reload] do
+    run "bin/unison start"
+  end
+
+  # The triggers plugin doesn't trigger on `vagrant status` calls.
+  if ARGV[0] == 'status'
+    puts "Unison status:"
+    puts
+    puts `bin/unison status`
+    puts
+  end
+
   # Enable provisioning with a shell script. Additional provisioners such as
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
@@ -102,4 +118,5 @@ Vagrant.configure(2) do |config|
   #   sudo apt-get update
   #   sudo apt-get install -y apache2
   # SHELL
+
 end

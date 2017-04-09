@@ -1,0 +1,89 @@
+#!/bin/bash
+
+# First figure out where we're being run from
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
+  DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+  SOURCE="$(readlink "$SOURCE")"
+  # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
+done
+DIR="$(dirname "$( cd -P "$( dirname "$SOURCE" )" && pwd )")"
+
+unset VAGRANT_INTERNAL_BUNDLERIZED
+ssh_config="$DIR/.vagrant/ssh-config"
+case "$1" in
+setup)
+  # Running vagrant from vagrant needs
+  # this to be unset.
+
+  # create ssh-config file
+  vagrant ssh-config > "$ssh_config"
+
+  # create unison profile
+  profile="
+root = ./microsites
+root = ssh://default//microsites
+#ignore = Name {.git,.vagrant}
+
+prefer = ./microsites
+repeat = 2
+terse = true
+dontchmod = false
+perms = 0
+confirmbigdel = false
+sshargs = -F $ssh_config
+"
+
+  # write profile
+
+  cd "$DIR/.vagrant"
+  [ -d .unison ] || mkdir .unison
+  echo "$profile" > .unison/up.prf
+  ;;
+
+start)
+  if [ ! -e "$DIR/.vagrant/.unison" ] ; then
+    echo "Run '$0 setup' first."
+    exit 1
+  fi
+  HOME="$DIR/.vagrant"
+  vagrant ssh-config > "$ssh_config"
+  if [ -e "$DIR/.vagrant/unison.pid" ] ; then
+    kill "$(cat "$DIR/.vagrant/unison.pid")"
+  fi
+  nohup unison up </dev/null >/dev/null 2>&1 &
+  echo "$!" > "$DIR/.vagrant/unison.pid"
+  ;;
+
+stop)
+  if [ -e "$DIR/.vagrant/unison.pid" ] ; then
+    kill "$(cat "$DIR/.vagrant/unison.pid")" 2> /dev/null
+    rm -f "$DIR/.vagrant/unison.pid"
+  fi
+  ;;
+
+status)
+  if [ -e "$DIR/.vagrant/unison.pid" ] ; then
+    s=$(ps -f -q "$(cat "$DIR/.vagrant/unison.pid")" 2>/dev/null)
+    if [ x"$(echo "$s" | wc -l)" = x"1" ] ; then
+      echo "unison is not running"
+    else
+      echo "$s"
+    fi
+  else
+    echo "unison is not running"
+  fi
+  ;;
+
+
+debug)
+  HOME="$DIR/.vagrant"
+  vagrant ssh-config > "$ssh_config"
+  unison up -debug all
+  ;;
+
+*)
+  echo "usage: $0 (setup|start|stop)"
+  ;;
+esac
