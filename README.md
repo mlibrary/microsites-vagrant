@@ -35,7 +35,6 @@ A vagrant configuration for running microsites locally. Filesystem syncing via u
 1. `ansible-container build`
 1.
 
-    ```bash
     docker \
       run -itd \
      --net microsites \
@@ -43,7 +42,6 @@ A vagrant configuration for running microsites locally. Filesystem syncing via u
      --name microsites \
      -v "$PWD/microsites:/microsites" \
      microsites-vagrant-web
-    ```
 
 1. `git clone https://github.com/mlibrary/microsites`
 1. `(cd rb && bundle install --path .bundle)`
