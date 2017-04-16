@@ -2,7 +2,11 @@
 ROOT = File.expand_path(__FILE__ + '/../..')
 CONFIG = "#{ROOT}/microsites/wp-config.php"
 EXAMPLE = "#{CONFIG}.EXAMPLE"
-CREDENTIALS = "#{ROOT}/credentials/mysql/microsites"
+if File.exist?("#{ROOT}/credentials/mysql/microsites")
+  CREDENTIALS = "#{ROOT}/credentials/mysql/microsites"
+elsif File.exist?("#{ROOT}/ansible/credentials/mysql/microsites")
+  CREDENTIALS = "#{ROOT}/ansible/credentials/mysql/microsites"
+end
 exit 0 if File.exist?(CONFIG)
 
 params = {

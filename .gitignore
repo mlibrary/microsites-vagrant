@@ -1,5 +1,7 @@
 /microsites
+/ansible/credentials
 /credentials
+/.config
 /.vagrant
 /rb/.bundle
 *.swo

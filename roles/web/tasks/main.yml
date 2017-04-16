@@ -1,11 +1,12 @@
 ---
-- name: Install apache
-  apt: name=apache2 state=present
-- name: Install php5-cli
-  apt: name=php5-cli state=present
-- name: Install php5-cgi
-  apt: name=php5-cgi state=present
-- name: Install php5 for Apache
-  apt: name=libapache2-mod-php5 state=present
-- name: Install php5
-  apt: name=php5-mysql state=present
+- name: Install apache and modules
+  apt:
+    name: "{{item}}"
+    state: present
+  with_items:
+    - php5-cli
+    - apache2
+    - php5-cgi
+    - php5
+    - libapache2-mod-php5
+    - libapache2-mod-webauthldap

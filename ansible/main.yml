@@ -1,0 +1,25 @@
+# This should be your Ansible playbooks to provision your containers.
+# An inventory will be automatically created using the names of the services
+# from your container.yml file.
+# Add any roles or other modules you'll need to this directory too.
+# For many examples of roles, check out Ansible Galaxy: https://galaxy.ansible.com/
+#
+---
+- hosts: all
+  gather_facts: false
+  pre_tasks:
+    - name: 'install term-readline'
+      raw: 'apt-get install libterm-readline-gnu-perl -y'
+    - name: 'install python '
+      raw: 'apt-get install python python2.7 -y'
+  roles:
+    - role: standard
+      tags: ['vagrant']
+    - role: web
+      tags: ['vagrant']
+    - role: database
+      tags: ['vagrant']
+    - role: microsites
+      tags: ['vagrant']
+  vars:
+    vagrant: false

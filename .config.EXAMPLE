@@ -1,0 +1,5 @@
+# Uncomment this line if using vagrant.
+# RUN="vagrant ssh -- -e none"
+
+# Uncomment this line if using docker.
+# RUN="docker exec -i microsites"

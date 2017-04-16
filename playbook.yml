@@ -12,3 +12,5 @@
       tags: ['vagrant']
     - role: microsites
       tags: ['vagrant']
+  vars:
+    vagrant: true

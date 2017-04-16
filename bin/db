@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 if [ x"$2" = x"" ] ; then
   FILE="$USER.microsites.sql.gz"
 else
@@ -17,18 +16,22 @@ while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symli
 done
 DIR="$(dirname "$( cd -P "$( dirname "$SOURCE" )" && pwd )")"
 
+if [ -e "$DIR/.config" ] ; then
+  source "$DIR/.config"
+fi
+
 case "$1" in
 import)
   # Copy the export from box
   "$DIR/bin/box" get "$FILE"
 
   # Load the export via ssh and mysql
-  gunzip -c < "$FILE" | vagrant ssh -- mysql -u root microsites
+  gunzip -c < "$FILE" | $RUN mysql -u root microsites
   ;;
 
 export)
   # Dump the export to a file via ssh and mysql
-  vagrant ssh -- -e none mysqldump -u root microsites | gzip -c > "$FILE"
+  $RUN mysqldump -u root microsites | gzip -c > "$FILE"
 
   # Upload the export to box.
   "$DIR/bin/box" put "$FILE"

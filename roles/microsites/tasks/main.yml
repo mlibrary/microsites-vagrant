@@ -1,5 +1,10 @@
 - name: Create /microsites
   file: state=directory path=/microsites mode=0775 owner=vagrant group=vagrant
+  when: vagrant == true
+
+- name: Create /microsites
+  file: state=directory path=/microsites mode=0775 owner=root group=root
+  when: vagrant == false
 
 - name: Create mysql database for microsites
   mysql_db:
@@ -27,41 +32,25 @@
   file: state=absent path=/etc/apache2/sites-enabled/000-default.conf
   notify: apache reload
 
-- name: Link the microsites vhost config
+- name: Enable apache configurations.
   file:
-    dest: /etc/apache2/sites-enabled/001-microsites.conf
-    src: ../sites-available/001-microsites.conf
+    dest: "{{item.dest}}"
+    src: "{{item.src}}"
     owner: root
     group: root
     state: link
   notify: apache reload
-
-- name: Enable mod_authnz_ldap and mod_ldap
-  file:
-    dest: /etc/apache2/mods-enabled/ldap.conf
-    src: ../mods-available/ldap.conf
-    owner: root
-    group: root
-    state: link
-  notify: apache reload
-
-- name: Enable mod_authnz_ldap and mod_ldap
-  file:
-    dest: /etc/apache2/mods-enabled/ldap.load
-    src: ../mods-available/ldap.load
-    owner: root
-    group: root
-    state: link
-  notify: apache reload
-
-- name: Enable mod_authnz_ldap and mod_ldap
-  file:
-    dest: /etc/apache2/mods-enabled/authnz_ldap.load
-    src: ../mods-available/authnz_ldap.load
-    owner: root
-    group: root
-    state: link
-  notify: apache reload
+  with_items:
+    - dest: /etc/apache2/sites-enabled/001-microsites.conf
+      src: ../sites-available/001-microsites.conf
+    - dest: /etc/apache2/mods-enabled/ldap.conf
+      src: ../mods-available/ldap.conf
+    - dest: /etc/apache2/mods-enabled/ldap.load
+      src: ../mods-available/ldap.load
+    - dest: /etc/apache2/mods-enabled/authnz_ldap.load
+      src: ../mods-available/authnz_ldap.load
+    - dest: /etc/apache2/mods-enabled/rewrite.load
+      src: ../mods-available/rewrite.load
 
 # This is handled better in ansible 2.1. I'm on 2.0.0.2 currently.
 # http://chaosmail.github.io/programming/2015/03/04/install-deb-packages-in-ansible/
@@ -75,13 +64,13 @@
   get_url:
     url="https://github.com/wp-cli/builds/raw/gh-pages/deb/php-wpcli_1.1.0_all.deb"
     dest="/tmp/php-wpcli.deb"
+    validate_certs="false"
   when:
     - php_wpcli_check_deb.rc == 1
     - php_wpcli_check_deb.stdout != '1.1.0'
 
 - name: Install php-wpcli
   apt: deb="/tmp/php-wpcli.deb"
-  become: true
   when:
     - php_wpcli_check_deb.rc == 1
     - php_wpcli_check_deb.stdout != '1.1.0'
