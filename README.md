@@ -12,7 +12,7 @@ A vagrant configuration for running microsites locally. Filesystem syncing via u
 
 ## Installing a microsites vagrant host
 
-1. Add microsites.local to your `hosts` file as `10.255.21.10`
+1. Add microsites.local to your `/etc/hosts` file as `10.255.21.10`
 1. `git clone https://github.com/mlibrary/microsites-vagrant`
 1. `cd microsites-vagrant`
 1. `vagrant up`
@@ -34,20 +34,19 @@ A vagrant configuration for running microsites locally. Filesystem syncing via u
 1. `docker network create --subnet 10.255.21.0/24  microsites`
 1. `ansible-container build`
 1.
-
-    docker \
-      run -itd \
-     --net microsites \
-     --ip 10.255.21.10 \
-     --name microsites \
-     -v "$PWD/microsites:/microsites" \
-     microsites-vagrant-web
+        docker \
+          run -itd \
+         --net microsites \
+         --ip 10.255.21.10 \
+         --name microsites \
+         -v "$PWD/microsites:/microsites" \
+         microsites-vagrant-web
 
 1. `git clone https://github.com/mlibrary/microsites`
 1. `(cd rb && bundle install --path .bundle)`
 1. `bin/box setup`
 1. `bin/wp-config`
-1. Follow the instructions in bin/box output to get an Oauth access token for box.itd.umich.edu.
+1. Follow the instructions in `bin/box setup` output to get an Oauth access token for box.itd.umich.edu.
 1. Create .config from .config.EXAMPLE.
 
 ## Starting with microsites' WordPress
