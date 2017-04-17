@@ -8,6 +8,8 @@
 - hosts: all
   gather_facts: false
   pre_tasks:
+    - name: 'apt-get update and upgrade'
+      raw: 'apt-get update && apt-get upgrade -y'
     - name: 'install term-readline'
       raw: 'apt-get install libterm-readline-gnu-perl -y'
     - name: 'install python '
