@@ -4,8 +4,14 @@
 # Uncomment this line if using docker.
 # DEV="docker exec -i microsites"
 
-# Update this to match whatever you run to ssh to production.
-PROD="ssh -e none microsites"
-
 # Update this to match the production database name.
 DB_NAME="production_microsites_db"
+
+# Update this to the production host name for rsync.
+PROD_HOST="microsites"
+
+# Update this to the production path for wordpress.
+PROD_PATH="/path/to/wordpress"
+
+# Update this to match whatever you run to ssh to production.
+PROD="ssh -e none $PROD_HOST"
