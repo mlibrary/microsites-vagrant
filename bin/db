@@ -20,23 +20,42 @@ if [ -e "$DIR/.config" ] ; then
   source "$DIR/.config"
 fi
 
+MYSQLDUMP="mysqldump --lock-tables=false --skip-add-locks"
+
+function load_file {
+  # Load the export via ssh and mysql
+  gunzip -c < "$FILE" | $DEV mysql -u root microsites
+}
+
+function dump_file {
+  # Dump the export to a file via ssh and mysql
+  $DEV $MYSQLDUMP -u root microsites | gzip -c > "$FILE"
+}
+
 case "$1" in
+push)
+  dump_file
+  gunzip -c < "$FILE" | $PROD "mysql $DB_NAME"
+  ;;
+
+pull)
+  $PROD "$MYSQLDUMP $DB_NAME" | gzip -c > "$FILE"
+  load_file
+  ;;
+
 import)
   # Copy the export from box
   "$DIR/bin/box" get "$FILE"
-
-  # Load the export via ssh and mysql
-  gunzip -c < "$FILE" | $RUN mysql -u root microsites
+  load_file
   ;;
 
 export)
-  # Dump the export to a file via ssh and mysql
-  $RUN mysqldump -u root microsites | gzip -c > "$FILE"
-
+  dump_file
   # Upload the export to box.
   "$DIR/bin/box" put "$FILE"
   ;;
+
 *)
-  echo "usage: $0 (import | export) [$USER.microsites.sql.gz]"
+  echo "usage: $0 (import | export | push | pull) [$USER.microsites.sql.gz]"
   exit 1
 esac

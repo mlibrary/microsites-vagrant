@@ -1,5 +1,11 @@
 # Uncomment this line if using vagrant.
-# RUN="vagrant ssh -- -e none"
+# DEV="vagrant ssh -- -e none"
 
 # Uncomment this line if using docker.
-# RUN="docker exec -i microsites"
+# DEV="docker exec -i microsites"
+
+# Update this to match whatever you run to ssh to production.
+PROD="ssh -e none microsites"
+
+# Update this to match the production database name.
+DB_NAME="production_microsites_db"
