@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# First figure out where we're being run from
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
+  DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+  SOURCE="$(readlink "$SOURCE")"
+  # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
+done
+DIR="$(dirname "$( cd -P "$( dirname "$SOURCE" )" && pwd )")"
+
+if [ -e "$DIR/.config" ] ; then
+  source "$DIR/.config"
+fi
+
+echo -n '{"current": "'
+echo -n $($PROD "bin/wp --path=\"$PROD_PATH\" core version")
+echo -n '", "available": "'
+echo -n $($PROD "bin/wp --path=\"$PROD_PATH\" core check-update --field=version")
+echo '"}'
+$PROD "bin/wp --path=\"$PROD_PATH\" site list --fields=url --format=json"
+echo
+
+for i in $($PROD "bin/wp --path=\"$PROD_PATH\" site list --fields=url --format=csv | tail -n -1") ; do
+  $PROD "bin/wp --path=\"$PROD_PATH\" plugin list --url=\"$i\" --fields=name,title,status,update,version,update_version --format=json"
+  echo
+  $PROD "bin/wp --path=\"$PROD_PATH\" theme list --url=\"$i\" --fields=name,title,status,update,version,update_version --format=json"
+  echo
+done
+
