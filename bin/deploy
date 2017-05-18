@@ -27,5 +27,8 @@ rsync \
   --exclude=.gitignore \
   --exclude=wp-config.php \
   --exclude=wp-content/files \
+  --exclude=\*.swp \
+  --exclude=\*.swo \
+  --exclude=\*.zip \
   "$DIR/microsites/" \
   "$PROD_HOST":"$PROD_PATH"
