@@ -50,7 +50,7 @@ start)
   HOME="$DIR/.vagrant"
   vagrant ssh-config > "$ssh_config"
   if [ -e "$DIR/.vagrant/unison.pid" ] ; then
-    kill "$(cat "$DIR/.vagrant/unison.pid")"
+    kill "$(cat "$DIR/.vagrant/unison.pid")" 2> /dev/null
   fi
   nohup unison up </dev/null >/dev/null 2>&1 &
   echo "$!" > "$DIR/.vagrant/unison.pid"
