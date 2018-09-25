@@ -1,0 +1,7 @@
+#!/bin/bash
+
+vagrant ssh -- \
+  wp \
+    --path=/microsites \
+    --url=http://microsites.local \
+    "$@"
