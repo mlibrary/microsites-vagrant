@@ -33,9 +33,15 @@ function dump_file {
 }
 
 case "$1" in
+local)
+  $PROD "$MYSQLDUMP $DB_NAME | gzip -c" > "$FILE"
+  gunzip -c < "$FILE" | mysql -u root -p "$LOCAL_DB"
+  ;;
 push)
-  dump_file
-  gunzip -c < "$FILE" | $PROD "mysql $DB_NAME"
+  #dump_file
+  #gunzip -c < "$FILE" | $PROD "mysql $DB_NAME"
+  echo "Pushing the database at this point is probably a bad idea."
+  exit 1
   ;;
 
 pull)

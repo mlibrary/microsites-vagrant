@@ -1,3 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'boxr'
+gem 'ruby-wpdb'
+gem 'pry'
+gem 'rsolr'
+gem 'sanitize'
