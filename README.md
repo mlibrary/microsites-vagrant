@@ -63,3 +63,6 @@ The database import depends on the `.config` file.  Look at `.config.EXAMPLE`.
 Use `bin/db import [db-file]` and `bin/db export [db-file]` to import and export a file respectively.
 
 If a file name is not provided. The default is `$USER.microsites.sql.gz`.
+
+## Updating wp core
+bin/wp core update --minor=4.9

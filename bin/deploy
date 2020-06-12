@@ -29,6 +29,7 @@ rsync \
   --exclude=wp-content/uploads \
   --exclude=\*.swp \
   --exclude=\*.swo \
+  --exclude=.htaccess \
   --exclude=\*.zip \
   "$DIR/microsites/" \
   "$PROD_HOST":"$PROD_PATH"

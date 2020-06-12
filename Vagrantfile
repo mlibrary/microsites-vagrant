@@ -70,19 +70,18 @@ Vagrant.configure(2) do |config|
     ansible.playbook = 'playbook.yml'
   end
 
-  config.vm.provision "trigger", good_exit: [0, 128] do |trigger|
-    trigger.fire do
-      unless File.exist?('microsites')
-        run "git clone https://github.com/mlibrary/microsites"
-      end
-    end
+  config.trigger.after [:provision] do |trigger|
+    trigger.name = "Clone microsites code"
+    trigger.exit_codes = [0, 128]
+    trigger.run = { inline: "git clone https://github.com/mlibrary/microsites" }
   end
 
-  config.vm.provision "trigger" do |trigger|
-    trigger.fire do
-      run "bin/wp-config"
-      run "bin/unison setup"
-      run "bash -c '(cd rb && bundle install --path .bundle)'"
+  config.trigger.after [:provision] do |trigger|
+    trigger.name = "Provisioning configuration"
+    trigger.ruby do |env, machine|
+      system("bin/wp-config")
+      system("bin/unison setup")
+      system("bash -c '(cd rb && bundle install --path .bundle)'")
       unless File.exist?('credentials/box-config.yml')
         puts
         puts "Configuring box."
@@ -91,16 +90,18 @@ Vagrant.configure(2) do |config|
         cfg['client_secret'] = ask "client_secret: "
         IO.write('credentials/box-config.yml', YAML.dump(cfg))
       end
-      run "bin/box setup"
+      system("bin/box setup")
     end
   end
 
-  config.trigger.before [:halt, :reload, :suspend, :destroy] do
-    run "bin/unison stop"
+  config.trigger.before [:halt, :reload, :suspend, :destroy] do |trigger|
+    trigger.name = "Stop Unison"
+    trigger.run = { inline: "bin/unison stop" }
   end
 
-  config.trigger.after [:up, :resume, :reload] do
-    run "bin/unison start"
+  config.trigger.after [:up, :resume, :reload] do |trigger|
+    trigger.name = "Start Unison"
+    trigger.run = { inline: "bin/unison start" }
   end
 
   # The triggers plugin doesn't trigger on `vagrant status` calls.
